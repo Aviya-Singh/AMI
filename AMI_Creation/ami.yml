@@ -1,0 +1,6 @@
+---
+- name: AMI Creation
+  hosts:  localhost
+  connection: local
+  roles:
+    - ami

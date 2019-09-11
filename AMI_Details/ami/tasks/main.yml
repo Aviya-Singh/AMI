@@ -1,0 +1,30 @@
+---
+# tasks file for ami
+
+- name: gather facts about an AMI
+  ec2_ami_facts:
+    region: "{{ Region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    owners: "{{ owners }}"
+  register: out
+
+- name: Delete file
+  file:
+    dest: "/tmp/AMI_details"
+    state: absent
+  delegate_to: localhost
+
+- name: Create a file
+  file:
+    dest: "/tmp/AMI_details"
+    state: touch
+  delegate_to: localhost
+
+- shell: echo 'AMI_NAME, AMI_DESCRIPTION, AMI_IMAGE_ID , AMI_IMAGE_LOCATION , AMI_OWNER_ID' >> /tmp/AMI_details
+  delegate_to: localhost
+
+- include: fetch.yml
+  with_items: "{{ out.images }}"
+  loop_control:
+    loop_var: item_a

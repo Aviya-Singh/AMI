@@ -1,0 +1,38 @@
+- block:
+  - set_fact:
+      name: "{{ item_a.name }}"
+  rescue:
+  - set_fact:
+      name: ""
+
+- block:
+  - set_fact:
+      description: "{{ item_a.description }}"
+  rescue:
+  - set_fact:
+      description: ""
+
+
+- block:
+  - set_fact:
+      image_id: "{{ item_a.image_id }}"
+  rescue:
+  - set_fact:
+      image_id: ""
+
+- block:
+  - set_fact:
+      image_location: "{{ item_a.image_location }}"
+  rescue:
+  - set_fact:
+      image_location: ""
+
+- block:
+  - set_fact:
+      owner_id: "{{ item_a.owner_id }}"
+  rescue:
+  - set_fact:
+      owner_id: ""
+
+- shell: echo "{{ name }},{{ description }},{{ image_id }},{{ image_location }},{{ owner_id }}" >> /tmp/AMI_details
+  delegate_to: localhost

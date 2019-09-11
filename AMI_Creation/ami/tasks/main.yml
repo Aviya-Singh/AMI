@@ -1,0 +1,44 @@
+---
+# tasks file for ami
+
+- shell: cat /var/ansible/ANSIBLE_TASKS/AMI_Creation/ami/files/instance_list | awk '{print $1}' | uniq
+  register: instance
+
+- ec2_instance_facts:
+    region: "{{ Region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    instance_ids: "{{ item }}"
+  register: out
+  with_items: "{{ instance.stdout_lines }}"
+
+- debug:
+    var: out
+
+#- debug:
+#    msg: "{{ item_a._ansible_item_label }}"
+#  with_items: "{{ out.results }}"
+#  loop_control:
+#    loop_var: item_a
+
+#- meta: end_play
+
+#- debug:
+#    msg: "{{ item_a.instances.0.private_ip_address }}"
+#  with_items: "{{ out.results }}"
+#  loop_control:
+#    loop_var: item_a
+
+- name: Creating AMI with no wait
+  ec2_ami:
+    region: "{{ Region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    instance_id: "{{ item_a._ansible_item_label }}"
+    wait: no
+    name: "AMI_{{ item_a.instances.0.private_ip_address }}_{{ lookup('pipe', 'date +%d-%m-%Y') }}"
+    description: "AMI_{{ item_a.instances.0.private_ip_address }}_{{ lookup('pipe', 'date +%d-%m-%Y') }}"
+    no_reboot: yes
+  with_items: "{{ out.results }}"
+  loop_control:
+    loop_var: item_a
