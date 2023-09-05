@@ -15,20 +15,6 @@
 - debug:
     var: out
 
-#- debug:
-#    msg: "{{ item_a._ansible_item_label }}"
-#  with_items: "{{ out.results }}"
-#  loop_control:
-#    loop_var: item_a
-
-#- meta: end_play
-
-#- debug:
-#    msg: "{{ item_a.instances.0.private_ip_address }}"
-#  with_items: "{{ out.results }}"
-#  loop_control:
-#    loop_var: item_a
-
 - name: Creating AMI with no wait
   ec2_ami:
     region: "{{ Region }}"
